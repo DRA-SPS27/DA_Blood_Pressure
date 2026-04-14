@@ -1,0 +1,77 @@
+---
+title: "DATA 606 Project Proposal"
+author: "Denise Atherley"
+date: "2026-04-13"
+output:
+  word_document: default
+  html_document: default
+---
+
+### Data Preparation
+
+```{r setup, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+# load packages
+
+library(tidyverse)
+
+# load data
+
+url <-"https://raw.githubusercontent.com/DRA-SPS27/DA_Blood_Pressure/refs/heads/main/blood_pressure_global_dataset.csv"
+
+bp_data<-read_csv(url)
+
+glimpse(bp_data)
+
+```
+
+
+### Research question 
+
+**You should phrase your research question in a way that matches up with the scope of inference your dataset allows for.**
+
+I will be exploring how modifiable lifestyle factors, like physical activity, salt intake or stress levels, interact with non-modifiable risk factors, like age or family history, to predict the likelihood of severe hypertension?
+
+### Cases 
+
+**What are the cases, and how many are there?**
+There are 8,000 unique Patient_IDs. This means that there is a snapshot of different individuals, rather than tracking the same patients over time.
+
+
+### Data collection 
+
+**Describe the method of data collection.**
+This data is meant to simulate data collected by the World Health Organization and provides a comprehensive, multi-dimensional synthetic record of blood pressure measurements across several variables. The main dataset consists of 8,000+ patient records with 34 columns covering demographics, lifestyle factors, blood pressure measurements, clinical classifications, and measurement context across 80+ countries.
+
+
+### Type of study 
+
+**What type of study is this (observational/experiment)?**
+
+This study is an observational, cross-sectional study. It is observational because the researchers did not intervene (nobody was assigned to a "high salt" or "low salt" group) and it is cross-sectional because the data represents a "snapshot" in time for each patient
+
+
+### Data Source 
+
+**If you collected the data, state self-collected. If not, provide a citation/link.**
+
+I identified a publicly available data source on kaggle.com that I found compelling. You can find the source at here: https://www.kaggle.com/datasets/zkskhurram/blood-pressure-by-age-global-dataset
+A copy of the downloaded dataset was added to a public repository to be pulled into this report.
+
+
+### Describe your variables?
+
+**Are they quantitative or qualitative**
+
+**If you are are running a regression or similar model, which one is your dependent variable?**
+
+The variables are qualitative. The dependent variable is the Blood Pressure Category. The independent variables are the modifiable questions around physical activity, salt intake and stress level as well as the non-modifiable questions around age, and family history.
+
+### Relevant summary statistics 
+
+I will be looking at averages and creating scatter plots to visually explore my research question.
+
+**Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
+
+```{r}
+
+```
