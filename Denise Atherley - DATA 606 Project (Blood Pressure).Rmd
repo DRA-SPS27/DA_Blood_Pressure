@@ -3,22 +3,29 @@ title: "DATA 606 Project Proposal"
 author: "Denise Atherley"
 date: "2026-04-13"
 output:
-  word_document: default
+  pdf_document:
+    latex_engine: xelatex
   html_document: default
+  word_document: default
 ---
 
 ### Data Preparation
+To set myself up, I ensure that all of the packages I need are loaded and the data set I selected is able to be read in RStudio.
 
 ```{r setup, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+
 # load packages
 
 library(tidyverse)
+library(skimr)
+library(janitor)
 
 # load data
 
 url <-"https://raw.githubusercontent.com/DRA-SPS27/DA_Blood_Pressure/refs/heads/main/blood_pressure_global_dataset.csv"
 
-bp_data<-read_csv(url)
+bp_data<-read_csv(url) %>%
+  clean_names()
 
 glimpse(bp_data)
 
@@ -73,5 +80,63 @@ I will be looking at averages and creating scatter plots to visually explore my 
 **Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
 
 ```{r}
+# Summary Statistics
+# Using skimr for a highly detailed statistical breakdown
+bp_data %>%
+  select(age, physical_activity, diet_salt_intake, stress_level, 
+         family_hx_hypertension, systolic_bp_mm_hg, bp_category) %>%
+  skim()
+
+# Create a binary indicator for "Severe Hypertension" for later plotting
+bp_data <- bp_data %>%
+  mutate(
+    severe_hypertension = ifelse(bp_category %in% c("Hypertension Stage 2", "Hypertensive Crisis"), 1, 0),
+    age_group_bins = cut(age, breaks = c(0, 30, 50, 70, 120), labels = c("<30", "30-50", "50-70", "70+"), right = FALSE)
+  )
 
 ```
+
+```{r}
+# Visualizations
+
+# Plot A: Boxplot - BP by Age Group and Family History
+ggplot(bp_data, aes(x = age_group_bins, y = systolic_bp_mm_hg, fill = family_hx_hypertension)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Systolic BP by Age Group and Family History",
+    x = "Age Group",
+    y = "Systolic BP (mmHg)",
+    fill = "Family History"
+  )
+
+# Plot B: Scatter Plot - BP vs Age colored by Physical Activity
+# Using a sample of 1000 to prevent overplotting
+set.seed(42)
+bp_data %>%
+  sample_n(1000) %>%
+  ggplot(aes(x = age, y = systolic_bp_mm_hg, color = physical_activity)) +
+  geom_point(alpha = 0.6) +
+  theme_minimal() +
+  labs(
+    title = "Systolic BP vs Age by Physical Activity",
+    x = "Age",
+    y = "Systolic BP (mmHg)",
+    color = "Physical Activity"
+  )
+
+# Plot C: Bar Plot - Severe Hypertension by Stress and Salt Intake
+bp_data %>%
+  group_by(diet_salt_intake, stress_level) %>%
+  summarise(prop_severe = mean(severe_hypertension), .groups = 'drop') %>%
+  ggplot(aes(x = stress_level, y = prop_severe, fill = diet_salt_intake)) +
+  geom_col(position = "dodge") +
+  theme_minimal() +
+  labs(
+    title = "Likelihood of Severe Hypertension by Stress and Salt Intake",
+    x = "Stress Level",
+    y = "Proportion with Severe Hypertension",
+    fill = "Dietary Salt Intake"
+  )
+```
+
